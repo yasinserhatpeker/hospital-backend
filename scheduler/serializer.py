@@ -4,12 +4,12 @@ from .models import Surgeon,Surgery,AnesthesiaTeam,Constraints,Schedule,Operatio
 class OperationRoomSerializer(serializers.ModelSerializer):
    class Meta:
        model = OperationRoom
-       fields= '__all__'
+       fields= ['id','name','room_type']
     
 class SurgeonSerializer(serializers.ModelSerializer):
     class Meta:
         model=Surgeon
-        fields='__all__'
+        fields=['id','name','specialty','off_day']
         
 class SurgerySerializer(serializers.ModelSerializer):
     class Meta:
