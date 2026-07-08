@@ -13,8 +13,8 @@ class Surgeon(models.Model):
         ('Pazartesi', 'Pazartesi'),
         ('Salı','Salı'),
         ('Çarşamba','Çarşamba'),
-        ('Perşembe','Perşembe')
-        ('Cuma','Cuma')    
+        ('Perşembe','Perşembe'),
+        ('Cuma','Cuma'), 
     ]
     name=models.CharField(max_length=100)
     specialty = models.CharField(max_length=100)
@@ -30,7 +30,7 @@ class Surgery(models.Model):
         ('Düşük', 'Düşük'),
         ('Orta','Orta'),
         ('Yüksek','Yüksek'),
-        ('Kritik','Kritik')
+        ('Kritik','Kritik'),
     ]
     patient_name = models.CharField(max_length=100)
     operation_name = models.CharField(max_length=100)
@@ -47,7 +47,7 @@ class Surgery(models.Model):
 class Constraints(models.Model):
     RULE_TYPES=[
         ('HARD', 'Hard Constraint (Kesin)'),
-        ('SOFT', 'Soft Constraint(Esnek)')
+        ('SOFT', 'Soft Constraint(Esnek)'),
     ]
     
     name = models.CharField(max_length=100)
@@ -69,4 +69,17 @@ class AnesthasiaTeam(models.Model):
         return self.name
 
 
+
+class Schedule(models.Model):
+    date = models.DateField(auto_now_add=True)
+    room = models.ForeignKey(OperationRoom, on_delete=models.CASCADE)
+    surgeon = models.ForeignKey(Surgeon, on_delete=models.CASCADE)
+    team = models.ForeignKey(AnesthasiaTeam, on_delete=models.CASCADE)
+    surgery = models.ForeignKey(Surgery, on_delete=models.CASCADE)
+    start_slot = models.IntegerField()
+    end_slot = models.IntegerField()
+    
+    
+    def __str__(self):
+        return f"{self.room.name} | Slot = {self.start_slot} - {self.end_slot} | {self.surgery.patient_name}"
     
