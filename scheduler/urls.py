@@ -8,8 +8,7 @@ router.register(r'surgeons',SurgeonViewSet)
 router.register(r'teams',AnesthesiaTeamViewSet)
 router.register(r'surgeries',SurgeryViewSet)
 router.register(r'schedules',ScheduleViewSet)
-
-
+router.register(r'constraints',ConstraintsViewSet)
 
 urlpatterns = [
     path('', include(router.urls))
