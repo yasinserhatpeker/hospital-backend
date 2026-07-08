@@ -62,7 +62,7 @@ class Constraints(models.Model):
 
 
 
-class AnesthasiaTeam(models.Model):
+class AnesthesiaTeam(models.Model):
     name = models.CharField(max_length=100, unique=True)
     
     def __str__(self):
@@ -74,7 +74,7 @@ class Schedule(models.Model):
     date = models.DateField(auto_now_add=True)
     room = models.ForeignKey(OperationRoom, on_delete=models.CASCADE)
     surgeon = models.ForeignKey(Surgeon, on_delete=models.CASCADE)
-    team = models.ForeignKey(AnesthasiaTeam, on_delete=models.CASCADE)
+    team = models.ForeignKey(AnesthesiaTeam, on_delete=models.CASCADE)
     surgery = models.ForeignKey(Surgery, on_delete=models.CASCADE)
     start_slot = models.IntegerField()
     end_slot = models.IntegerField()
