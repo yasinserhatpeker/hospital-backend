@@ -70,7 +70,12 @@ class SurgeryOptimizer:
         return pending_surgeries
 
     
-    
+    def _is_valid_replacement(self,date_str,room_id,duration,required_room_id,start_slot):
+        
+        if required_room_id and required_room_id != room_id:
+            return False
+        
+        
         
     
     
