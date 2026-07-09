@@ -22,7 +22,7 @@ class SurgeryOptimizer:
     
     def _load_constraints(self):
          constraints = Constraints.objects.filter(is_active = True)
-         return {c.name : c.weigth for c in constraints}  
+         return {c.name : c.weight for c in constraints}  
      
      
     def _initiliaze_grids(self):
@@ -42,6 +42,10 @@ class SurgeryOptimizer:
              for room in self.rooms:
                  self.schedule_grid[date_str][room.id] ={slot:None for slot in range(1,self.total_daily_slots+1)}  
         
-            
+             current_date += timedelta(days=1)
+        
+    
+    def _calculate_surgery_score(self,surgery):
+        
              
         
