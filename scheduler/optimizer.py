@@ -114,5 +114,14 @@ class SurgeryOptimizer:
                 return None,False
             
             return True,available_team
+        
+    
+    def _place(self,date_str,room_id,start_slot,surgeon_id,team_id,surgery_id,duration):
+        
+        for slot in range(start_slot, start_slot + duration):
+            self.schedule_grid[date_str][room_id][slot] = surgery_id
+            self.surgeon_tracker[date_str][slot].add(surgeon_id)
+            self.team_tracker[date_str][slot].add(team_id)
+            
             
      
