@@ -22,4 +22,8 @@ class SurgeryOptimizer:
     
     def _load_constraints(self):
          constraints = Constraints.objects.filter(is_active = True)
-           
+         return {c.name : c.weigth for c in constraints}  
+     
+     
+    def _initiliaze_grids(self):
+         
