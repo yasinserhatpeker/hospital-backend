@@ -12,13 +12,13 @@ class SurgeonSerializer(serializers.ModelSerializer):
         fields=['id','name','specialty','off_day']
         
 class SurgerySerializer(serializers.ModelSerializer):
-    required_room_name = serializers.ReadOnlyField(source='required_room.name') #foreign key
+    required_room_name = serializers.ReadOnlyField(source='required_room.name') # foreign key
     class Meta:
         model=Surgery
-        fields=['id','required_room','required_room.name','priority','patient_name','operation_name','duration_slots']
+        fields=['id','required_room','required_room_name','priority','patient_name','operation_name','duration_slots']
 
 
-class AnesthasiaTeamSerializer(serializers.ModelSerializer):
+class AnesthesiaTeamSerializer(serializers.ModelSerializer):
     class Meta:
         model=AnesthesiaTeam
         fields =['id','name']
@@ -26,10 +26,19 @@ class AnesthasiaTeamSerializer(serializers.ModelSerializer):
 class ConstraintsSerializer(serializers.ModelSerializer):
     class Meta:
         model=Constraints
-        fields ='__all__'
+        fields =['id','name','description','is_active','weight','rule_type']
         
 class ScheduleSerializer(serializers.ModelSerializer):
+    surgeon_name = serializers.ReadOnlyField(source='surgeon.name')
+    room_name = serializers.ReadOnlyField(source='room.name')
+    team_name = serializers.ReadOnlyField(source='team.name')
+    surgery_name = serializers.ReadOnlyField(source ='surgery.operation_name')
     
     class Meta:
         model=Schedule
-        fields = '__all__'
+        fields = ['id','start_slot', 'end_slot','date',
+                  'room', 'room_name',
+                   'surgeon','surgeon_name',
+                   'surgery','surgery_name',
+                   'team','team_name'
+                  ]
