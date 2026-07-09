@@ -15,7 +15,7 @@ class SurgerySerializer(serializers.ModelSerializer):
     required_room_name = serializers.ReadOnlyField(source='required_room.name') #foreign key
     class Meta:
         model=Surgery
-        fields=['id','']
+        fields=['id','required_room','required_room.name','priority','patient_name','operation_name','duration_slots']
 
 
 class AnesthasiaTeamSerializer(serializers.ModelSerializer):
@@ -29,6 +29,7 @@ class ConstraintsSerializer(serializers.ModelSerializer):
         fields ='__all__'
         
 class ScheduleSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model=Schedule
         fields = '__all__'
