@@ -189,6 +189,37 @@ class SurgeryOptimizer:
             return {"status":"success", "message":"There's no surgery to plan.", "data":[]}
         
         success = self._backtracking_algorithm(surgeries_to_plan,0)
+        
+        if success:
+            try:
+                with transaction.atomic():
+                    for asg in self.final_assignment:
+                        Schedule.objects.create(
+                            date = asg['date'],
+                            start_slot = asg['start_slot'],
+                            end_slot = asg['end_slot'],
+                            room_id = asg['room_id'],
+                            surgeon_id = asg['surgeon_id'],
+                            team_id = asg['team_id'],
+                            surgery_id = asg['surgery_id']
+                            )
+                        
+                        return {
+                            "status":"success",
+                            "message":f"{len(surgeries_to_plan)} surgeries successfully planned.",
+                            "planned_count":len(surgeries_to_plan)
+                        }
+                    
+                    
+                    
+            except Exception as e:
+                return {"status":"error","message":f"there's an error occured during the query.{str(e)}"}
+                
+        else:
+             return {"status":"error", "message":"there's an error occured during planning. Please change the constraints or timezone."}
+               
+                
+                    
                 
                             
         
