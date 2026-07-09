@@ -19,4 +19,7 @@ class SurgeryOptimizer:
         
         self.final_assignment = []
         
-        
+    
+    def _load_constraints(self):
+         constraints = Constraints.objects.filter(is_active = True)
+           
