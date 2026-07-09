@@ -47,3 +47,8 @@ class ScheduleGenerationSerializer(serializers.Serializers):
     start_date = serializers.DateField(format="%d-%m-%Y", input_formats = ["%d-%m-%Y"])
     end_date = serializers.DateField(format="%d-%m-%Y", input_formats = ["%d-%m-%Y"])
     
+    def validate(self,data):
+        if data['start_date'] > data['end_date']:
+         raise serializers.ValidationError("start date cannot be bigger than end date")
+        return data
+        
