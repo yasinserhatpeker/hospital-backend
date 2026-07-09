@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Schedule,Surgeon,Surgery,AnesthesiaTeam,Constraints,OperationRoom
-from .serializer import ScheduleSerializer,SurgeonSerializer,SurgerySerializer,AnesthesiaTeamSerializer,ConstraintsSerializer,OperationRoomSerializer
+from .serializer import ScheduleSerializer,SurgeonSerializer,SurgerySerializer,AnesthesiaTeamSerializer,ConstraintsSerializer,OperationRoomSerializer,ScheduleGenerationSerializer
 
 from .optimizer import SurgeryOptimizer
 
@@ -31,4 +31,14 @@ class ConstraintsViewSet(viewsets.ModelViewSet):
     serializer_class = ConstraintsSerializer
     
     
-class GenerateScheduleAPIView()
+class GenerateScheduleAPIView(APIView):
+    
+   def post(self,request,*args, **kwargs):
+       serializer = ScheduleGenerationSerializer(data=request.data)
+       
+       serializer.is_valid(raise_exception = True)
+       
+       start_date = serializer.validated_data['start_date']
+       end_date = serializer.validated_data['end_date']
+       
+       
