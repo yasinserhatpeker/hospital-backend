@@ -216,7 +216,7 @@ class SurgeryOptimizer:
                 return {"status":"error","message":f"there's an error occured during the query.{str(e)}"}
                 
         else:
-             return {"status":"error", "message":"there's an error occured during planning. Please change the constraints or timezone."}
+             return {"status":"error", "message":"there's an error occured during planning. Please configure the constraints or timezone."}
                
                 
                     
