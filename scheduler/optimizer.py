@@ -4,8 +4,8 @@ from django.db import transaction
 
 class SurgeryOptimizer:
     def __init__(self,start_date_str,end_date_str):
-        self.start_date_str = datetime.strftime(start_date_str,"%Y-%m-%d").date()
-        self.end_date_str = datetime.strftime(end_date_str,"%Y-%m-%d").date()
+        self.start_date_str = datetime.strftime(start_date_str,"%d-%m-%Y").date()
+        self.end_date_str = datetime.strftime(end_date_str,"%d-%m-%Y").date()
         
         self.active_constraints = self._load_constraints()
         self.total_daily_slots = 10
@@ -16,5 +16,7 @@ class SurgeryOptimizer:
         
         self.rooms = list(OperationRoom.objects.all())
         self.teams = list(AnesthesiaTeam.objects.all())
+        
+        self.final_assignment = []
         
         
