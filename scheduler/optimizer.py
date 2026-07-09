@@ -1,5 +1,5 @@
 from .models import AnesthesiaTeam,Surgeon,Surgery,Schedule,OperationRoom,Constraints
-from datetime import datetime,timedelta
+from datetime import timedelta
 from django.db import transaction
 
 class SurgeryOptimizer:
@@ -25,7 +25,7 @@ class SurgeryOptimizer:
          return {c.name : c.weight for c in constraints}  
      
      
-    def _initiliaze_grids(self):
+    def _initialize_grids(self):
          current_date = self.start_date
          
          while current_date <= self.end_date:
@@ -46,6 +46,34 @@ class SurgeryOptimizer:
         
     
     def _calculate_surgery_score(self,surgery):
+         priority_weight = self.active_constraints.get('priority_weight',5)
+         duration_weight = self.active_constraints.get('duration_weight',2)
+         
+         priority_map = {
+             'kritik':4,
+             'yüksek':3,
+             'orta':2,
+             'düşük':1
+         } 
+         
+         safe_priority_str = surgery.priority.strip().lower()
+         urgency_multiplier = priority_map.get(safe_priority_str,1)
+         
+         score = (urgency_multiplier * priority_weight) +(surgery.duration_slots * duration_weight)
+         return score
+     
+     
+    def _get_sorted_surgeries(self):
+        pending_surgeries = list(Surgery.objects.filter(schedule__isnull=True))
+        pending_surgeries.sort(key=self._calculate_surgery_score, reverse=True)
         
-             
+        return pending_surgeries
+
+    
+    
         
+    
+    
+     
+     
+     
