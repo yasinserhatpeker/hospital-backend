@@ -3,9 +3,9 @@ from datetime import datetime,timedelta
 from django.db import transaction
 
 class SurgeryOptimizer:
-    def __init__(self,start_date_str,end_date_str):
-        self.start_date = datetime.strftime(start_date_str,"%d-%m-%Y").date()
-        self.end_date = datetime.strftime(end_date_str,"%d-%m-%Y").date()
+    def __init__(self,start_date,end_date):
+        self.start_date = start_date
+        self.end_date = end_date
         
         self.active_constraints = self._load_constraints()
         self.total_daily_slots = 10
