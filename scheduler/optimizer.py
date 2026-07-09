@@ -88,7 +88,6 @@ class SurgeryOptimizer:
         
         
     
-    
     def _get_available_resources(self,date_str,start_slot,surgeon_id,duration):
         
         end_slot = start_slot + duration -1
@@ -98,5 +97,22 @@ class SurgeryOptimizer:
                 return False,None
             
             
+        available_team = None
         
+        for team in self.teams:
+            team_is_free = True
+            for slot in range(start_slot,end_slot+1):
+                if team.id in self.team_tracker[date_str][slot]:
+                    team_is_free is False
+                    break
+                
+            if team_is_free:
+                available_team = team
+                break
+            
+            if not available_team:
+                return None,False
+            
+            return True,available_team
+            
      
