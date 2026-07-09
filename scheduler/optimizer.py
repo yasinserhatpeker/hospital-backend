@@ -96,8 +96,7 @@ class SurgeryOptimizer:
             if surgeon_id in self.surgeon_tracker[date_str][slot]:
                 return False,None
             
-            
-        available_team = None
+            available_team = None
         
         for team in self.teams:
             team_is_free = True
@@ -123,5 +122,14 @@ class SurgeryOptimizer:
             self.surgeon_tracker[date_str][slot].add(surgeon_id)
             self.team_tracker[date_str][slot].add(team_id)
             
+    
+    def _remove(self,date_str,room_id,start_slot,surgeon_id,team_id,surgery_id,duration):
+         
+         for slot in range(start_slot,start_slot + duration):
+             self.schedule_grid[date_str][room_id][slot] = None
+             self.surgeon_tracker[date_str][slot].remove(surgeon_id)
+             self.team_tracker[date_str][slot].remove(surgery_id)
+             
             
+           
      
