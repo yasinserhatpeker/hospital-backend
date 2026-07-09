@@ -178,6 +178,18 @@ class SurgeryOptimizer:
             current_date += timedelta(days=1)
             
         return False
+    
+    
+    def generate_schedule_plan(self):
+        
+        self._initialize_grids()
+        surgeries_to_plan = self._get_sorted_surgeries()
+        
+        if not surgeries_to_plan:
+            return {"status":"success", "message":"There's no surgery to plan.", "data":[]}
+        
+        success = self._backtracking_algorithm(surgeries_to_plan,0)
+                
                             
         
        
