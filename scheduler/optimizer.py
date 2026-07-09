@@ -89,6 +89,14 @@ class SurgeryOptimizer:
         
     
     
-     
-     
+    def _get_available_resources(self,date_str,start_slot,surgeon_id,duration):
+        
+        end_slot = start_slot + duration -1
+        
+        for slot in range(start_slot,end_slot + 1):
+            if surgeon_id in self.surgeon_tracker[date_str][slot]:
+                return False,None
+            
+            
+        
      
