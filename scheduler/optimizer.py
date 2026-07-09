@@ -132,4 +132,9 @@ class SurgeryOptimizer:
              
             
            
-     
+    def _backtrack(self,surgeries,index):
+        
+        if index == len(surgeries):
+            return True   
+        
+          
