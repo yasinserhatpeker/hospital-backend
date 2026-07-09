@@ -4,8 +4,8 @@ from django.db import transaction
 
 class SurgeryOptimizer:
     def __init__(self,start_date_str,end_date_str):
-        self.start_date_str = datetime.strftime(start_date_str,"%d-%m-%Y").date()
-        self.end_date_str = datetime.strftime(end_date_str,"%d-%m-%Y").date()
+        self.start_date = datetime.strftime(start_date_str,"%d-%m-%Y").date()
+        self.end_date = datetime.strftime(end_date_str,"%d-%m-%Y").date()
         
         self.active_constraints = self._load_constraints()
         self.total_daily_slots = 10
@@ -26,4 +26,13 @@ class SurgeryOptimizer:
      
      
     def _initiliaze_grids(self):
+         current_date = self.start_date
          
+         while current_date <= self.end_date:
+             date_str = current_date.strftime("%d-%m-%Y")
+             self.schedule_grid[date_str] = {}
+             self.surgeon_tracker[date_str] = {}
+             self.team_tracker[date_str] = {}
+             
+             
+        
