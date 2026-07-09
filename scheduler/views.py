@@ -1,6 +1,10 @@
 from rest_framework import viewsets
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .models import Schedule,Surgeon,Surgery,AnesthesiaTeam,Constraints,OperationRoom
 from .serializer import ScheduleSerializer,SurgeonSerializer,SurgerySerializer,AnesthesiaTeamSerializer,ConstraintsSerializer,OperationRoomSerializer
+
+from .optimizer import SurgeryOptimizer
 
 class OperationRoomViewSet(viewsets.ModelViewSet):
     queryset = OperationRoom.objects.all()
@@ -25,3 +29,6 @@ class AnesthesiaTeamViewSet(viewsets.ModelViewSet):
 class ConstraintsViewSet(viewsets.ModelViewSet):
     queryset = Constraints.objects.all()
     serializer_class = ConstraintsSerializer
+    
+    
+class GenerateScheduleAPIView()
