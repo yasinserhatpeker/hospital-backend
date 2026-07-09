@@ -34,5 +34,7 @@ class SurgeryOptimizer:
              self.surgeon_tracker[date_str] = {}
              self.team_tracker[date_str] = {}
              
+        
+            
              
         
