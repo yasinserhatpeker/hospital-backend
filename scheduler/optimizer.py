@@ -151,10 +151,30 @@ class SurgeryOptimizer:
                 for start_slot in range(1, self.total_daily_slots + 1):
                     
                     if self._is_valid_replacement(date_str,room.id,start_slot,duration,required_room_id):
+                        
                         resources_ok, available_team = self._get_available_resources(date_str,start_slot,surgeon_id,duration)
                         
                         if resources_ok:
                             self._place(date_str,room.id,start_slot,surgeon_id,available_team.id,current_surgery.id)
+                            
+                            assignment = {
+                                'date' : current_date,
+                                'start_slot' : start_slot,
+                                'end_slot' : start_slot + duration + 1,
+                                'room_id' : room.id,
+                                'surgeon_id' : surgeon_id,
+                                'team_id':available_team.id,
+                                'surgery_id':current_surgery.id
+                                }
+                            self.final_assignment.append(assignment)
+                            
+                            if self._backtrack(surgeries,index + 1):
+                                return True
+                            
+                            self.final_assignment.pop(assignment)
+                            self._remove(date_str,room.id,start_slot,current_surgery.id,available_team.id,duration)
+                            
+                            
                             
         
        
