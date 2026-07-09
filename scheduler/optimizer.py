@@ -75,6 +75,16 @@ class SurgeryOptimizer:
         if required_room_id and required_room_id != room_id:
             return False
         
+        end_slot = start_slot + duration - 1
+        
+        if end_slot > self.total_daily_slots:
+            return False
+        
+        for slot in range(start_slot,end_slot +1):
+            if self.schedule_grid[date_str][room_id][slot] is not None:
+                return False
+          
+        return True
         
         
     
