@@ -33,7 +33,9 @@ class SurgeryOptimizer:
              self.schedule_grid[date_str] = {}
              self.surgeon_tracker[date_str] = {}
              self.team_tracker[date_str] = {}
-             
+            
+             for slot in range(1,self.total_daily_slots + 1):
+                
         
             
              
