@@ -35,7 +35,12 @@ class SurgeryOptimizer:
              self.team_tracker[date_str] = {}
             
              for slot in range(1,self.total_daily_slots + 1):
-                
+                  self.surgeon_tracker[date_str][slot] = set()
+                  self.team_tracker[date_str][slot] = set()
+            
+             
+             for room in self.rooms:
+                 self.schedule_grid[date_str][room.id] ={slot:None for slot in range(1,self.total_daily_slots+1)}  
         
             
              
