@@ -123,12 +123,12 @@ class SurgeryOptimizer:
             self.team_tracker[date_str][slot].add(team_id)
             
     
-    def _remove(self,date_str,room_id,start_slot,surgeon_id,team_id,surgery_id,duration):
+    def _remove(self,date_str,room_id,start_slot,surgeon_id,team_id,duration):
          
          for slot in range(start_slot,start_slot + duration):
              self.schedule_grid[date_str][room_id][slot] = None
              self.surgeon_tracker[date_str][slot].remove(surgeon_id)
-             self.team_tracker[date_str][slot].remove(surgery_id)
+             self.team_tracker[date_str][slot].remove(team_id)
              
             
            
@@ -137,4 +137,26 @@ class SurgeryOptimizer:
         if index == len(surgeries):
             return True   
         
-          
+        current_surgery = surgeries[index]
+        duration = current_surgery.duration_slots
+        
+        surgeon_id = current_surgery.surgeon.id
+        required_room_id = current_surgery.required_room.id if current_surgery.required_room else None
+        
+        current_date = self.start_date
+        while current_date <= self.end_date:
+            date_str = current_date.stfrtime("%d-%m-%Y")
+            
+            for room in self.rooms:
+                for start_slot in range(1, self.total_daily_slots + 1):
+                    
+                    if self._is_valid_replacement(date_str,room.id,start_slot,duration,required_room_id):
+                        resources_ok, available_team = self._get_available_resources(date_str,start_slot,surgeon_id,duration)
+                        
+                        if resources_ok:
+                            self._place(date_str,room.id,start_slot,surgeon_id,available_team.id,current_surgery.id)
+                            
+        
+       
+       
+               
