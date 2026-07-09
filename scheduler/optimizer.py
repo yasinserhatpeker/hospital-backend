@@ -106,12 +106,14 @@ class SurgeryOptimizer:
         return True, available_team
         
     def _place(self, date_str, room_id, start_slot, surgeon_id, team_id, surgery_id, duration):
+        
         for slot in range(start_slot, start_slot + duration):
             self.schedule_grid[date_str][room_id][slot] = surgery_id
             self.surgeon_tracker[date_str][slot].add(surgeon_id)
             self.team_tracker[date_str][slot].add(team_id)
             
     def _remove(self, date_str, room_id, start_slot, surgeon_id, team_id, duration):
+        
         for slot in range(start_slot, start_slot + duration):
             self.schedule_grid[date_str][room_id][slot] = None
             self.surgeon_tracker[date_str][slot].remove(surgeon_id)
@@ -139,7 +141,7 @@ class SurgeryOptimizer:
                         resources_ok, available_team = self._get_available_resources(date_str, start_slot, surgeon_id, duration)
                         
                         if resources_ok:
-                            # duration eklendi
+                            
                             self._place(date_str, room.id, start_slot, surgeon_id, available_team.id, current_surgery.id, duration)
                             
                             assignment = {
@@ -189,7 +191,7 @@ class SurgeryOptimizer:
                             surgery_id=asg['surgery_id']
                         )
                         
-                # Döngü tamamen bittikten SONRA return atılıyor
+               
                 return {
                     "status": "success",
                     "message": f"{len(surgeries_to_plan)} surgeries successfully planned.",
