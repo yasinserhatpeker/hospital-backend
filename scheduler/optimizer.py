@@ -132,7 +132,7 @@ class SurgeryOptimizer:
              
             
            
-    def _backtrack(self,surgeries,index):
+    def _backtracking_algorithm(self,surgeries,index):
         
         if index == len(surgeries):
             return True   
@@ -174,7 +174,10 @@ class SurgeryOptimizer:
                             self.final_assignment.pop(assignment)
                             self._remove(date_str,room.id,start_slot,current_surgery.id,available_team.id,duration)
                             
-                            
+            
+            current_date += timedelta(days=1)
+            
+        return False
                             
         
        
