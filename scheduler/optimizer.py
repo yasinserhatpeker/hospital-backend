@@ -18,7 +18,7 @@ class SurgeryOptimizer:
         self.teams = list(AnesthesiaTeam.objects.all())
         
         self.final_assignment = []
-        
+      
     def _load_constraints(self):
         constraints = Constraints.objects.filter(is_active=True)
         return {c.name: c.weight for c in constraints}  

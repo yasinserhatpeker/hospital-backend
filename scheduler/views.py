@@ -6,27 +6,31 @@ from .serializer import ScheduleSerializer,SurgeonSerializer,SurgerySerializer,A
 
 from .optimizer import SurgeryOptimizer
 
-class OperationRoomViewSet(viewsets.ModelViewSet):
+class BaseProjectViewSet(viewsets.ModelViewSet):
+    # pagitation,authentication ...
+    pass
+
+class OperationRoomViewSet(BaseProjectViewSet):
     queryset = OperationRoom.objects.all()
     serializer_class = OperationRoomSerializer
 
-class SurgeonViewSet(viewsets.ModelViewSet):
+class SurgeonViewSet(BaseProjectViewSet):
    queryset = Surgeon.objects.all()
    serializer_class = SurgeonSerializer
    
-class SurgeryViewSet(viewsets.ModelViewSet):
+class SurgeryViewSet(BaseProjectViewSet):
     queryset = Surgery.objects.all()
     serializer_class = SurgerySerializer
     
-class ScheduleViewSet(viewsets.ModelViewSet):
+class ScheduleViewSet(BaseProjectViewSet):
     queryset=Schedule.objects.select_related('room', 'surgeon', 'surgery','team').all()
     serializer_class = ScheduleSerializer
 
-class AnesthesiaTeamViewSet(viewsets.ModelViewSet):
+class AnesthesiaTeamViewSet(BaseProjectViewSet):
     queryset = AnesthesiaTeam.objects.all()
     serializer_class = AnesthesiaTeamSerializer
     
-class ConstraintsViewSet(viewsets.ModelViewSet):
+class ConstraintsViewSet(BaseProjectViewSet):
     queryset = Constraints.objects.all()
     serializer_class = ConstraintsSerializer
     
