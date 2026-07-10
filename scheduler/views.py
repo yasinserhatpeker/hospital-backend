@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets,status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Schedule,Surgeon,Surgery,AnesthesiaTeam,Constraints,OperationRoom
@@ -41,5 +41,11 @@ class GenerateScheduleAPIView(APIView):
        start_date = serializer.validated_data['start_date']
        end_date = serializer.validated_data['end_date']
        
-       
-       
+       try:
+           optimizer = SurgeryOptimizer(start_date,end_date)
+           result = optimizer.generate_schedule_plan()
+           
+           if result['status'] == 'success':
+               return Response(result, status=status.HTTP_201_CREATED)
+           else:
+                return Response(result, status=status.HTTP_400_BAD_REQUEST)
