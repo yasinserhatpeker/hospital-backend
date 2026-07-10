@@ -1,4 +1,4 @@
-from .models import AnesthesiaTeam, Surgeon, Surgery, Schedule, OperationRoom, Constraints
+from .models import AnesthesiaTeam,Surgery, Schedule, OperationRoom, Constraints
 from datetime import timedelta
 from django.db import transaction
 

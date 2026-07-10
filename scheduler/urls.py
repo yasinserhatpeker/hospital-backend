@@ -12,6 +12,6 @@ router.register(r'constraints',ConstraintsViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('generate-plan', GenerateScheduleAPIView.as_view(), name='generate_plan')
+    path('generate-plan/', GenerateScheduleAPIView.as_view(), name='generate-plan')
 ]
 
