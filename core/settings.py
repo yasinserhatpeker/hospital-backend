@@ -23,7 +23,8 @@ INSTALLED_APPS = [
     
     'rest_framework',
     'corsheaders',
-    'scheduler'
+    'scheduler',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -99,5 +100,6 @@ CORS_ALLOW_ALL_ORIGINS = True
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
