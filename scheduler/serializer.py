@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from datetime import datetime,timedelta
 from .models import Surgeon,Surgery,AnesthesiaTeam,Constraints,Schedule,OperationRoom
 
 class OperationRoomSerializer(serializers.ModelSerializer):
@@ -48,6 +49,8 @@ class ScheduleSerializer(serializers.ModelSerializer):
                    'surgery','surgery_name',
                    'team','team_name'
                   ]
+    def get_start_time(self,obj):
+        
         
 class ScheduleGenerationSerializer(serializers.Serializer):
     start_date = serializers.DateField(format="%d-%m-%Y", input_formats = ["%d-%m-%Y"])
