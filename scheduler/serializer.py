@@ -54,7 +54,11 @@ class ScheduleSerializer(serializers.ModelSerializer):
         start = base_time + timedelta(hours=obj.start_slot - 1 )
         return start.strftime("%H:%M")
     
-    
+    def get_end_time(self,obj):
+        base_time = datetime.strftime("08:00","%H:%M")
+        end = base_time + timedelta(hours=obj.end_slot)
+        return end.strftime("%H:%M")
+        
         
         
 class ScheduleGenerationSerializer(serializers.Serializer):
