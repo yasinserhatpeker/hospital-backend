@@ -50,12 +50,12 @@ class ScheduleSerializer(serializers.ModelSerializer):
                    'team','team_name'
                   ]
     def get_start_time(self,obj):
-        base_time = datetime.strftime("08:00","%H:%M")
+        base_time = datetime.strptime("08:00","%H:%M")
         start = base_time + timedelta(hours=obj.start_slot - 1 )
         return start.strftime("%H:%M")
     
     def get_end_time(self,obj):
-        base_time = datetime.strftime("08:00","%H:%M")
+        base_time = datetime.strptime("08:00","%H:%M")
         end = base_time + timedelta(hours=obj.end_slot)
         return end.strftime("%H:%M")
         
