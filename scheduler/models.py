@@ -33,6 +33,7 @@ class Surgery(models.Model):
         ('Kritik','Kritik'),
     ]
     patient_name = models.CharField(max_length=100)
+    surgeon = models.ForeignKey(Surgeon, on_delete=models.CASCADE, null=True, blank=True)
     operation_name = models.CharField(max_length=100)
     required_specialty = models.CharField(max_length=200)
     duration_slots = models.IntegerField()

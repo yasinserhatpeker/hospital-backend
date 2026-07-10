@@ -1,4 +1,4 @@
-from .models import AnesthesiaTeam,Surgery, Schedule, OperationRoom, Constraints
+from .models import AnesthesiaTeam,Surgery,Surgeon, Schedule, OperationRoom, Constraints
 from datetime import timedelta
 from django.db import transaction
 
@@ -124,6 +124,10 @@ class SurgeryOptimizer:
             return True   
         
         current_surgery = surgeries[index]
+        
+        if not current_surgery.surgeon:
+         raise ValueError(f"'{current_surgery.patient_name}'named patient has no surgeon.")
+     
         duration = current_surgery.duration_slots
         
         surgeon_id = current_surgery.surgeon.id
