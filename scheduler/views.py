@@ -19,7 +19,7 @@ class SurgeryViewSet(viewsets.ModelViewSet):
     serializer_class = SurgerySerializer
     
 class ScheduleViewSet(viewsets.ModelViewSet):
-    queryset=Schedule.objects.select_related('room', 'surgeon', 'surgery','team').all() # avoiding n+1 problem with select_related
+    queryset=Schedule.objects.select_related('room', 'surgeon', 'surgery','team').all()
     serializer_class = ScheduleSerializer
 
 class AnesthesiaTeamViewSet(viewsets.ModelViewSet):
