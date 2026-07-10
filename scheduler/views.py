@@ -42,3 +42,4 @@ class GenerateScheduleAPIView(APIView):
        end_date = serializer.validated_data['end_date']
        
        
+       
