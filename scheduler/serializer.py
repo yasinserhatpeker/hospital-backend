@@ -29,6 +29,9 @@ class ConstraintsSerializer(serializers.ModelSerializer):
         fields =['id','name','description','is_active','weight','rule_type']
         
 class ScheduleSerializer(serializers.ModelSerializer):
+    start_time = serializers.SerializerMethodField()
+    end_time = serializers.SerializerMethodField()
+    
     surgeon_name = serializers.ReadOnlyField(source='surgeon.name')
     room_name = serializers.ReadOnlyField(source='room.name')
     team_name = serializers.ReadOnlyField(source='team.name')
@@ -36,7 +39,10 @@ class ScheduleSerializer(serializers.ModelSerializer):
     
     class Meta:
         model=Schedule
-        fields = ['id','start_slot', 'end_slot','date',
+        fields = ['id','start_slot', 'end_slot',
+                  'start_time',
+                  'end_time',
+                  'date',
                   'room', 'room_name',
                    'surgeon','surgeon_name',
                    'surgery','surgery_name',
