@@ -33,7 +33,7 @@ class ConstraintsViewSet(viewsets.ModelViewSet):
     
 class GenerateScheduleAPIView(APIView):
     
-   def post(self,request,*args, **kwargs):
+   def post(self,request):
        serializer = ScheduleGenerationSerializer(data=request.data)
        
        serializer.is_valid(raise_exception = True)
@@ -49,3 +49,7 @@ class GenerateScheduleAPIView(APIView):
                return Response(result, status=status.HTTP_201_CREATED)
            else:
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
+        
+       except Exception as e:
+           return Response({"error":f"There's an error occured in server-side. {str(e)}"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           
