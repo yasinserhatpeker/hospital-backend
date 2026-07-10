@@ -43,7 +43,7 @@ class ScheduleSerializer(serializers.ModelSerializer):
                    'team','team_name'
                   ]
         
-class ScheduleGenerationSerializer(serializers.Serializers):
+class ScheduleGenerationSerializer(serializers.Serializer):
     start_date = serializers.DateField(format="%d-%m-%Y", input_formats = ["%d-%m-%Y"])
     end_date = serializers.DateField(format="%d-%m-%Y", input_formats = ["%d-%m-%Y"])
     
