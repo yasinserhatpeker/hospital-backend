@@ -100,5 +100,6 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5174",
     "http://localhost:5173",
 ]
