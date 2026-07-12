@@ -3,7 +3,7 @@ from datetime import timedelta
 from collections import defaultdict
 from django.db import transaction
 
-TURKISH_WEEKDAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar']
+WEEKDAYS = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar']
 
 class SurgeryOptimizer:
     def __init__(self, start_date, end_date):
@@ -58,23 +58,30 @@ class SurgeryOptimizer:
         self._load_existing_schedules()
 
     def _load_existing_schedules(self):
+        
         existing = Schedule.objects.filter(date__gte=self.start_date, date__lte=self.end_date)
         for sched in existing:
             date_str = sched.date.strftime("%d-%m-%Y")
             if date_str not in self.schedule_grid:
                 continue
+            
             for slot in range(sched.start_slot, sched.end_slot + 1):
                 if sched.room_id in self.schedule_grid[date_str] and slot in self.schedule_grid[date_str][sched.room_id]:
+                    
                     self.schedule_grid[date_str][sched.room_id][slot] = sched.surgery_id
                 if slot in self.surgeon_tracker[date_str]:
+                    
                     self.surgeon_tracker[date_str][slot].add(sched.surgeon_id)
                     self.team_tracker[date_str][slot].add(sched.team_id)
+                    
             self.surgeon_daily_count[date_str][sched.surgeon_id] += 1
             self.surgeon_busy_ranges[date_str][sched.surgeon_id].append((sched.start_slot, sched.end_slot))
 
     def _calculate_surgery_score(self, surgery):
+        
         priority_constraint = self._constraint('priority_weight')
         duration_constraint = self._constraint('duration_weight')
+        
         priority_weight = priority_constraint.weight if priority_constraint else 5
         duration_weight = duration_constraint.weight if duration_constraint else 2
 
@@ -94,6 +101,7 @@ class SurgeryOptimizer:
     def _get_sorted_surgeries(self):
         pending_surgeries = list(Surgery.objects.filter(schedule__isnull=True))
         pending_surgeries.sort(key=self._calculate_surgery_score, reverse=True)
+        
         return pending_surgeries
 
 
@@ -115,13 +123,15 @@ class SurgeryOptimizer:
     def _violates_off_day(self, current_date, surgeon):
         if not surgeon.off_day:
             return False
-        return TURKISH_WEEKDAYS[current_date.weekday()] == surgeon.off_day
+        return WEEKDAYS[current_date.weekday()] == surgeon.off_day
 
     def _exceeds_max_daily(self, date_str, surgeon_id, limit):
         return self.surgeon_daily_count[date_str][surgeon_id] >= limit
 
     def _violates_min_rest(self, date_str, surgeon_id, start_slot, end_slot, min_gap):
+        
         for (busy_start, busy_end) in self.surgeon_busy_ranges[date_str][surgeon_id]:
+            
             if start_slot > busy_end:
                 gap = start_slot - busy_end - 1
             elif end_slot < busy_start:
@@ -165,7 +175,9 @@ class SurgeryOptimizer:
         for team in self.teams:
             team_is_free = True
             for slot in range(start_slot, end_slot + 1):
+                
                 if team.id in self.team_tracker[date_str][slot]:
+                    
                     team_is_free = False
                     break
 
@@ -203,11 +215,14 @@ class SurgeryOptimizer:
         self.surgeon_busy_ranges[date_str][surgeon_id].remove((start_slot, end_slot))
 
     def _backtracking_algorithm(self, surgeries, index, current_penalty):
+        
         if index == len(surgeries):
             self.solutions_explored += 1
+            
             if self.best_score is None or current_penalty < self.best_score:
                 self.best_score = current_penalty
                 self.best_assignment = list(self.final_assignment)
+                
             return self.best_score == 0 or self.solutions_explored >= self.max_solutions_to_explore
 
         current_surgery = surgeries[index]

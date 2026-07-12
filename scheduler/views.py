@@ -50,12 +50,15 @@ class GenerateScheduleAPIView(APIView):
            result = optimizer.generate_schedule_plan()
 
            if result['status'] == 'success':
+               
                if result.get('data') and hasattr(result['data'][0], 'pk'):
                    result = {**result, 'data': ScheduleSerializer(result['data'], many=True).data}
+                   
                return Response(result, status=status.HTTP_201_CREATED)
            else:
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
         
        except Exception as e:
+           
            return Response({"error":f"There's an error occured in server-side. {str(e)}"},status=status.HTTP_500_INTERNAL_SERVER_ERROR)
            
