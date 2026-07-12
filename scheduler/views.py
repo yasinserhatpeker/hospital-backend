@@ -48,8 +48,10 @@ class GenerateScheduleAPIView(APIView):
        try:
            optimizer = SurgeryOptimizer(start_date,end_date)
            result = optimizer.generate_schedule_plan()
-           
+
            if result['status'] == 'success':
+               if result.get('data') and hasattr(result['data'][0], 'pk'):
+                   result = {**result, 'data': ScheduleSerializer(result['data'], many=True).data}
                return Response(result, status=status.HTTP_201_CREATED)
            else:
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)

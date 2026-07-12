@@ -50,8 +50,16 @@ class Constraints(models.Model):
         ('HARD', 'Hard Constraint (Kesin)'),
         ('SOFT', 'Soft Constraint(Esnek)'),
     ]
-    
-    name = models.CharField(max_length=100)
+
+    CONSTRAINT_KEYS = [
+        ('priority_weight', 'Öncelik Ağırlığı (Sıralama)'),
+        ('duration_weight', 'Süre Ağırlığı (Sıralama)'),
+        ('surgeon_off_day', 'Cerrah İzin Günü'),
+        ('max_daily_surgeries', 'Cerrah Başı Günlük Maksimum Ameliyat'),
+        ('min_rest_slots', 'Ameliyatlar Arası Minimum Dinlenme (Slot)'),
+    ]
+
+    name = models.CharField(max_length=100, choices=CONSTRAINT_KEYS, unique=True)
     description = models.TextField()
     rule_type = models.CharField(max_length=10 , choices=RULE_TYPES)
     is_active = models.BooleanField(default=True)
@@ -72,7 +80,7 @@ class AnesthesiaTeam(models.Model):
 
 
 class Schedule(models.Model):
-    date = models.DateField(auto_now_add=True)
+    date = models.DateField()
     room = models.ForeignKey(OperationRoom, on_delete=models.CASCADE)
     surgeon = models.ForeignKey(Surgeon, on_delete=models.CASCADE)
     team = models.ForeignKey(AnesthesiaTeam, on_delete=models.CASCADE)
