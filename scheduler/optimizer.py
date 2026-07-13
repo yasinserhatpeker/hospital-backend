@@ -134,8 +134,10 @@ class SurgeryOptimizer:
             
             if start_slot > busy_end:
                 gap = start_slot - busy_end - 1
+                
             elif end_slot < busy_start:
                 gap = busy_start - end_slot - 1
+                
             else:
                 gap = -1
             if gap < min_gap:
@@ -153,18 +155,21 @@ class SurgeryOptimizer:
         soft_penalty = 0
 
         off_day_rule = self._constraint('surgeon_off_day')
+        
         if off_day_rule and self._violates_off_day(current_date, surgeon):
             if off_day_rule.rule_type == 'HARD':
                 return False, None, 0
             soft_penalty += off_day_rule.weight
 
         max_daily_rule = self._constraint('max_daily_surgeries')
+        
         if max_daily_rule and max_daily_rule.value and self._exceeds_max_daily(date_str, surgeon_id, max_daily_rule.value):
             if max_daily_rule.rule_type == 'HARD':
                 return False, None, 0
             soft_penalty += max_daily_rule.weight
 
         rest_rule = self._constraint('min_rest_slots')
+        
         if rest_rule and rest_rule.value and self._violates_min_rest(date_str, surgeon_id, start_slot, end_slot, rest_rule.value):
             if rest_rule.rule_type == 'HARD':
                 return False, None, 0
