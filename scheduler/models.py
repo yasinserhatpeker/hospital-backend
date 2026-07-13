@@ -52,11 +52,11 @@ class Constraints(models.Model):
     ]
 
     CONSTRAINT_KEYS = [
-        ('priority_weight', 'Öncelik Sıralama'),
-        ('duration_weight', 'Süre Sıralama'),
+        ('priority_weight', 'Öncelik Ağırlığı (Sıralama)'),
+        ('duration_weight', 'Süre Ağırlığı (Sıralama)'),
         ('surgeon_off_day', 'Cerrah İzin Günü'),
         ('max_daily_surgeries', 'Cerrah Başı Günlük Maksimum Ameliyat'),
-        ('min_rest_slots', 'Ameliyatlar Arası Minimum Dinlenme'),
+        ('min_rest_slots', 'Ameliyatlar Arası Minimum Dinlenme (Slot)'),
     ]
 
     name = models.CharField(max_length=100, choices=CONSTRAINT_KEYS, unique=True)
@@ -81,12 +81,10 @@ class AnesthesiaTeam(models.Model):
 
 class Schedule(models.Model):
     date = models.DateField()
-    
     room = models.ForeignKey(OperationRoom, on_delete=models.CASCADE)
     surgeon = models.ForeignKey(Surgeon, on_delete=models.CASCADE)
     team = models.ForeignKey(AnesthesiaTeam, on_delete=models.CASCADE)
     surgery = models.ForeignKey(Surgery, on_delete=models.CASCADE)
-    
     start_slot = models.IntegerField()
     end_slot = models.IntegerField()
     
