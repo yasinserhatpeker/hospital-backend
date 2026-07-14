@@ -71,6 +71,7 @@ class SurgeryOptimizer:
                 if schedule.room_id in self.schedule_grid[date_str] and slot in self.schedule_grid[date_str][schedule.room_id]:
                     
                     self.schedule_grid[date_str][schedule.room_id][slot] = schedule.surgery_id
+                    
                 if slot in self.surgeon_tracker[date_str]:
                     
                     self.surgeon_tracker[date_str][slot].add(schedule.surgeon_id)
@@ -109,6 +110,7 @@ class SurgeryOptimizer:
 
 
     def _is_valid_replacement(self, date_str, room_id, start_slot, duration, required_room_id):
+        
         if required_room_id and required_room_id != room_id:
             return False
 
@@ -124,8 +126,10 @@ class SurgeryOptimizer:
         return True
 
     def _violates_off_day(self, current_date, surgeon):
+        
         if not surgeon.off_day:
             return False
+        
         return WEEKDAYS[current_date.weekday()] == surgeon.off_day
 
     def _exceeds_max_daily(self, date_str, surgeon_id, limit):
@@ -172,6 +176,7 @@ class SurgeryOptimizer:
         if max_daily_rule and max_daily_rule.value and self._exceeds_max_daily(date_str, surgeon_id, max_daily_rule.value):
             if max_daily_rule.rule_type == 'HARD':
                 return False, None, 0
+            
             soft_penalty += max_daily_rule.weight
 
         rest_rule = self._constraint('min_rest_slots')
