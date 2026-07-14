@@ -233,7 +233,7 @@ class SurgeryOptimizer:
         self.surgeon_daily_count[date_str][surgeon_id] -= 1
         self.surgeon_busy_ranges[date_str][surgeon_id].remove((start_slot, end_slot))
 
-    def _backtracking_algorithm(self,surgeries,index,current_penalty):
+    def _core_algorithm(self,surgeries,index,current_penalty):
         
         if index == len(surgeries):
             self.solutions_explored += 1
@@ -283,7 +283,7 @@ class SurgeryOptimizer:
                             }
                             self.final_assignment.append(assignment)
 
-                            should_stop = self._backtracking_algorithm(surgeries, index + 1, current_penalty + soft_penalty)
+                            should_stop = self._core_algorithm(surgeries, index + 1, current_penalty + soft_penalty)
 
                             self.final_assignment.pop()
                             self._remove(date_str, room.id, start_slot, surgeon_id, available_team.id, duration)
@@ -302,7 +302,7 @@ class SurgeryOptimizer:
         if not surgeries_to_plan:
             return {"status": "success", "message": "There's no surgery to plan.", "data": []}
 
-        self._backtracking_algorithm(surgeries_to_plan, 0, 0)
+        self._core_algorithm(surgeries_to_plan, 0, 0)
 
         if self.best_assignment is not None:
             try:
