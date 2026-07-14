@@ -1,4 +1,4 @@
-from .models import AnesthesiaTeam,Surgery,Surgeon, Schedule, OperationRoom, Constraints
+from .models import AnesthesiaTeam, Surgery, Schedule, OperationRoom, Constraints
 from datetime import timedelta
 from collections import defaultdict
 from django.db import transaction
@@ -39,6 +39,7 @@ class SurgeryOptimizer:
         current_date = self.start_date
 
         while current_date <= self.end_date:
+            
             date_str = current_date.strftime("%d-%m-%Y")
             self.schedule_grid[date_str] = {}
             self.surgeon_tracker[date_str] = {}
@@ -55,27 +56,28 @@ class SurgeryOptimizer:
 
             current_date += timedelta(days=1)
 
+
         self._load_existing_schedules()
 
     def _load_existing_schedules(self):
         
         existing = Schedule.objects.filter(date__gte=self.start_date, date__lte=self.end_date)
-        for sched in existing:
-            date_str = sched.date.strftime("%d-%m-%Y")
+        for schedule in existing:
+            date_str = schedule.date.strftime("%d-%m-%Y")
             if date_str not in self.schedule_grid:
                 continue
-            
-            for slot in range(sched.start_slot, sched.end_slot + 1):
-                if sched.room_id in self.schedule_grid[date_str] and slot in self.schedule_grid[date_str][sched.room_id]:
+              
+            for slot in range(schedule.start_slot, schedule.end_slot + 1):
+                if schedule.room_id in self.schedule_grid[date_str] and slot in self.schedule_grid[date_str][schedule.room_id]:
                     
-                    self.schedule_grid[date_str][sched.room_id][slot] = sched.surgery_id
+                    self.schedule_grid[date_str][schedule.room_id][slot] = schedule.surgery_id
                 if slot in self.surgeon_tracker[date_str]:
                     
-                    self.surgeon_tracker[date_str][slot].add(sched.surgeon_id)
-                    self.team_tracker[date_str][slot].add(sched.team_id)
+                    self.surgeon_tracker[date_str][slot].add(schedule.surgeon_id)
+                    self.team_tracker[date_str][slot].add(schedule.team_id)
                     
-            self.surgeon_daily_count[date_str][sched.surgeon_id] += 1
-            self.surgeon_busy_ranges[date_str][sched.surgeon_id].append((sched.start_slot, sched.end_slot))
+            self.surgeon_daily_count[date_str][schedule.surgeon_id] += 1
+            self.surgeon_busy_ranges[date_str][schedule.surgeon_id].append((schedule.start_slot, schedule.end_slot))
 
     def _calculate_surgery_score(self, surgery):
         
@@ -96,6 +98,7 @@ class SurgeryOptimizer:
         urgency_multiplier = priority_map.get(safe_priority_str, 1)
 
         score = (urgency_multiplier * priority_weight) + (surgery.duration_slots * duration_weight)
+        
         return score
 
     def _get_sorted_surgeries(self):
@@ -126,6 +129,7 @@ class SurgeryOptimizer:
         return WEEKDAYS[current_date.weekday()] == surgeon.off_day
 
     def _exceeds_max_daily(self, date_str, surgeon_id, limit):
+        
         return self.surgeon_daily_count[date_str][surgeon_id] >= limit
 
     def _violates_min_rest(self, date_str, surgeon_id, start_slot, end_slot, min_gap):
@@ -142,6 +146,7 @@ class SurgeryOptimizer:
                 gap = -1
             if gap < min_gap:
                 return True
+            
         return False
 
     def _get_available_resources(self, date_str, current_date, start_slot, surgeon, duration):
@@ -159,6 +164,7 @@ class SurgeryOptimizer:
         if off_day_rule and self._violates_off_day(current_date, surgeon):
             if off_day_rule.rule_type == 'HARD':
                 return False, None, 0
+            
             soft_penalty += off_day_rule.weight
 
         max_daily_rule = self._constraint('max_daily_surgeries')
@@ -196,8 +202,10 @@ class SurgeryOptimizer:
 
         return True, available_team, soft_penalty
 
-    def _place(self, date_str, room_id, start_slot, surgeon_id, team_id, surgery_id, duration):
+    def _place(self,date_str,room_id,start_slot,surgeon_id,team_id,surgery_id,duration):
+        
         end_slot = start_slot + duration - 1
+        
         for slot in range(start_slot, start_slot + duration):
             
             self.schedule_grid[date_str][room_id][slot] = surgery_id
@@ -207,11 +215,12 @@ class SurgeryOptimizer:
         self.surgeon_daily_count[date_str][surgeon_id] += 1
         self.surgeon_busy_ranges[date_str][surgeon_id].append((start_slot, end_slot))
 
-    def _remove(self, date_str, room_id, start_slot, surgeon_id, team_id, duration):
+    def _remove(self,date_str,room_id,start_slot,surgeon_id,team_id,duration):
         
         end_slot = start_slot + duration - 1
         
         for slot in range(start_slot, start_slot + duration):
+            
             self.schedule_grid[date_str][room_id][slot] = None
             self.surgeon_tracker[date_str][slot].remove(surgeon_id)
             self.team_tracker[date_str][slot].remove(team_id)
@@ -219,7 +228,7 @@ class SurgeryOptimizer:
         self.surgeon_daily_count[date_str][surgeon_id] -= 1
         self.surgeon_busy_ranges[date_str][surgeon_id].remove((start_slot, end_slot))
 
-    def _backtracking_algorithm(self, surgeries, index, current_penalty):
+    def _core_algorithm(self,surgeries,index,current_penalty):
         
         if index == len(surgeries):
             self.solutions_explored += 1
@@ -269,7 +278,7 @@ class SurgeryOptimizer:
                             }
                             self.final_assignment.append(assignment)
 
-                            should_stop = self._backtracking_algorithm(surgeries, index + 1, current_penalty + soft_penalty)
+                            should_stop = self._core_algorithm(surgeries, index + 1, current_penalty + soft_penalty)
 
                             self.final_assignment.pop()
                             self._remove(date_str, room.id, start_slot, surgeon_id, available_team.id, duration)
@@ -288,23 +297,23 @@ class SurgeryOptimizer:
         if not surgeries_to_plan:
             return {"status": "success", "message": "There's no surgery to plan.", "data": []}
 
-        self._backtracking_algorithm(surgeries_to_plan, 0, 0)
+        self._core_algorithm(surgeries_to_plan, 0, 0)
 
         if self.best_assignment is not None:
             try:
                 created_schedules = []
                 with transaction.atomic():
                     for asg in self.best_assignment:
-                        sched = Schedule.objects.create(
+                        schedule = Schedule.objects.create(
                             date=asg['date'],
                             start_slot=asg['start_slot'],
-                            end_slot=asg['end_slot'],
+                         end_slot=asg['end_slot'],
                             room_id=asg['room_id'],
                             surgeon_id=asg['surgeon_id'],
                             team_id=asg['team_id'],
                             surgery_id=asg['surgery_id']
                         )
-                        created_schedules.append(sched)
+                        created_schedules.append(schedule)
 
                 return {
                     "status": "success",

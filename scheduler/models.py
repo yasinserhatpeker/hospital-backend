@@ -52,11 +52,11 @@ class Constraints(models.Model):
     ]
 
     CONSTRAINT_KEYS = [
-        ('priority_weight', 'Öncelik Ağırlığı (Sıralama)'),
-        ('duration_weight', 'Süre Ağırlığı (Sıralama)'),
+        ('priority_weight', 'Öncelik Ağırlığı '),
+        ('duration_weight', 'Süre Ağırlığı'),
         ('surgeon_off_day', 'Cerrah İzin Günü'),
         ('max_daily_surgeries', 'Cerrah Başı Günlük Maksimum Ameliyat'),
-        ('min_rest_slots', 'Ameliyatlar Arası Minimum Dinlenme (Slot)'),
+        ('min_rest_slots', 'Ameliyatlar Arası Minimum Dinlenme '),
     ]
 
     name = models.CharField(max_length=100, choices=CONSTRAINT_KEYS, unique=True)
